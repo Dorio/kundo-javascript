@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>API Demo</title>
+  <meta name="description" content="Demosajt för att visa hur en kommun kan använda Kundo">
+  <meta name="author" content="Kundo">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    h2 { margin: 0; }
+    ol {
+      background: #eeeeee;
+      border: 1px inset gray;
+      max-height: 100px;
+      width: 400px;
+      margin: 0 0 1em;
+      overflow: auto;
+    }
+    .highlighted {
+      background: #ffffcc;
+      padding: 2px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Page content here! -->
+
+  <script src="jquery-1.7.1.min.js"></script>
+  <script src="api.js"></script>
+  <script>
+    function callback_list(title) {
+      return function(data){
+        var header = $("<h2>" + title + ":</h2>");
+        var list = $("<ol></ol>");
+        $.each(data, function(i, item){
+          list.append("<li>" + item.title + "</li>");
+        });
+        $("body").append(header).append(list);
+      }
+    }
+    function callback_single(title) {
+      return function(data){
+        var header = $("<h2>" + title + ":</h2>");
+        var list = $("<ol><li>" + data.title + "</li></ol>");
+        $("body").append(header).append(list);
+      }
+    }
+    function callback_comments(title) {
+      return function(data){
+        var header = $("<h2>" + title + ":</h2>");
+        var list = $("<ol></ol>");
+        $.each(data, function(i, item){
+          list.append("<li>" + item.text.substring(0, 50) + "...</li>");
+        });
+        $("body").append(header).append(list);
+      }
+    }
+
+    var API = new KundoAPI("kundo", "json");
+    API.all({
+      callback: callback_list("All posts (1-50)")
+    });
+    API.all({
+      start: 50,
+      callback: callback_list("All posts (51-100)")
+    });
+    API.topic("q", {
+      callback: callback_list("All questions")
+    });
+    API.search("statistik", {
+      callback: callback_list("Search for \"statistik\"")
+    });
+    API.single(1, {
+      callback: callback_single("Post with ID=1")
+    });
+    API.comments(1, {
+      sort: "pub_date",
+      callback: callback_comments("Comments for post with ID=1")
+    });
+  </script>
+</body>
+</html>
