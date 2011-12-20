@@ -4,7 +4,7 @@ Simple Javascript library to access Kundo's API
 Test with live data:
 --------------------
 
-Clone this repository, and open [index.html](https://github.com/kundo/kundo-javascript/blob/master/index.html) locally.
+Clone this repository, and open [test.html](https://github.com/kundo/kundo-javascript/blob/master/test.html) locally.
 
 Examples:
 ---------
