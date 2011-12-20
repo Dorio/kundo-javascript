@@ -8,13 +8,13 @@
   <meta name="author" content="Kundo">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-    h2 { margin: 0; }
+    h2 { margin-bottom: 0; }
     ol {
       background: #eeeeee;
       border: 1px inset gray;
       max-height: 100px;
       width: 400px;
-      margin: 0 0 1em;
+      margin: 0;
       overflow: auto;
     }
     .highlighted {
@@ -24,11 +24,63 @@
   </style>
 </head>
 <body>
-  <!-- Page content here! -->
+  <form onsubmit="load_sample_data(this.slug.value); return false">
+    <p>This is a sample file showing how to access Kundo's API through Javascript.</p>
+    <label for="slug">Forum slug:</label>
+    <input id="slug" name="slug">
+    <button type="submit">Load forum data</button>
+  </form>
+  <div id="response"></div>
 
   <script src="jquery-1.7.1.min.js"></script>
   <script src="api.js"></script>
   <script>
+    function load_sample_data(slug) {
+      $("#response").empty();
+
+      // Create a new API object, that will be used for all subsequent calls
+      var API = new KundoAPI(slug);
+
+      // Get all dialogs in your forum (API gives you 50 at a time)
+      API.all({
+        callback: callback_list("All posts (1-50)")
+      });
+
+      // Get the next 50 dialogs in your forum
+      API.all({
+        start: 50,
+        callback: callback_list("All posts (51-100)")
+      });
+
+      // Get the all dialogs of the type "q". Other types are: q, p, s, b.
+      API.topic("q", {
+        callback: callback_list("All questions")
+      });
+
+      // Search your forum for a specific phrase. The matched phrase will be
+      // highlighted with <span class="highlighted">phrase</span>
+      API.search("fråga", {
+        callback: callback_list("Search for \"fråga\"")
+      });
+
+      // We want to demo fetching one specific ID, but we don't know the ID of any
+      // posts in your specific forum. So lets get all dialogs, fetch the ID
+      // of the first dialogs we find, and make a request for that dialog.
+      // While we're there, get all the comments for that dialog too.
+      API.all({
+        sort: "pub_date",
+        callback: function(data){
+          var dialog_id = data[0].id;
+          API.single(dialog_id, {
+            callback: callback_single("Post with ID=" + dialog_id)
+          });
+          API.comments(dialog_id, {
+            sort: "pub_date",
+            callback: callback_comments("Comments for post with ID=" + dialog_id)
+          });
+        }
+      });
+    }
     function callback_list(title) {
       return function(data){
         var header = $("<h2>" + title + ":</h2>");
@@ -36,14 +88,17 @@
         $.each(data, function(i, item){
           list.append("<li>" + item.title + "</li>");
         });
-        $("body").append(header).append(list);
+        $("#response").append(header).append(list);
       }
     }
     function callback_single(title) {
       return function(data){
         var header = $("<h2>" + title + ":</h2>");
-        var list = $("<ol><li>" + data.title + "</li></ol>");
-        $("body").append(header).append(list);
+        var list = $("<ol></ol>");
+        if (data) {
+          list.append($("<li>" + data.title + "</li>"));
+        }
+        $("#response").append(header).append(list);
       }
     }
     function callback_comments(title) {
@@ -53,31 +108,9 @@
         $.each(data, function(i, item){
           list.append("<li>" + item.text.substring(0, 50) + "...</li>");
         });
-        $("body").append(header).append(list);
+        $("#response").append(header).append(list);
       }
     }
-
-    var API = new KundoAPI("kundo", "json");
-    API.all({
-      callback: callback_list("All posts (1-50)")
-    });
-    API.all({
-      start: 50,
-      callback: callback_list("All posts (51-100)")
-    });
-    API.topic("q", {
-      callback: callback_list("All questions")
-    });
-    API.search("statistik", {
-      callback: callback_list("Search for \"statistik\"")
-    });
-    API.single(1, {
-      callback: callback_single("Post with ID=1")
-    });
-    API.comments(1, {
-      sort: "pub_date",
-      callback: callback_comments("Comments for post with ID=1")
-    });
   </script>
 </body>
 </html>
