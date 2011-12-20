@@ -4,8 +4,7 @@ Simple Javascript library to access Kundo's API
 Test with live data:
 --------------------
 
-Fetch your company slug (it's in the url to your forum: http://kundo.se/org/[slug]/),
-and go try this file locally: [https://github.com/kundo/kundo-javascript/blob/master/index.html]
+Clone this repository, and open [index.html](https://github.com/kundo/kundo-javascript/blob/master/index.html) locally.
 
 Examples:
 ---------
