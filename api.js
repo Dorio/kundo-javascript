@@ -1,6 +1,6 @@
 function KundoAPI(slug) {
   // Instance variables
-  this.BASE_URL = "http://kundo.se/api";
+  this.BASE_URL = "http://localhost:8000/api";
   this.FORMAT = ".json";
   if (!slug) {
     throw "Invalid slug. Please provide a proper slug.";
@@ -19,47 +19,92 @@ function KundoAPI(slug) {
     start: 0
   }
 
-  // Helper
-  this.get = function(url, settings) {
+  // Helpers
+  this.obj_to_string = function(obj) {
     var params = [];
-    for (attrname in settings) {
+    for (attrname in obj) {
       if (attrname == "callback") { continue; }
-      params.push(attrname + "=" + settings[attrname]);
+      params.push(attrname + "=" + decodeURIComponent(obj[attrname]));
     }
-    url = this.BASE_URL + url + "?" + params.join("&");
-    $.ajax({ url: url, dataType: "jsonp", success: settings.callback });
+    return params.join("&")
+  }
+  this.jsonp_get = function(url, settings) {
+    var params = this.obj_to_string(settings);
+    url = this.BASE_URL + url + "?" + params;
+    $.ajax({ url: url, dataType: "jsonp", success: function(data){
+      settings.callback(data);
+    }});
+  }
+  this.ajax_post = function(url, data, settings) {
+    // Cross domain POST is not possible with IE6 and IE7 so we
+    // simulate it with a jsonp_get instead.
+    settings = $.extend({}, data, settings);
+    this.jsonp_get(url, settings);
   }
 
+  // Allow access to "this" inside this.GET and this.POST
+  var that = this;
+
   // Get data from your forum
-  this.all = function(settings) {
-    settings = $.extend({}, default_sorted_settings, settings);
-    this.get('/' + this.slug + this.FORMAT, settings);
-  }
-  this.single = function(id, settings) {
-    if (!id || !typeof id == "number") {
-      throw "Invalid id. It should be numeric.";
+  this.GET = {
+    all: function(settings) {
+      settings = $.extend({}, default_sorted_settings, settings);
+      that.jsonp_get('/' + that.slug + that.FORMAT, settings);
+    },
+    single: function(dialog_id, settings) {
+      if (!dialog_id || !typeof dialog_id == "number") {
+        throw "Invalid id. It should be numeric.";
+      }
+      settings = $.extend({}, default_plain_settings, settings);
+      that.jsonp_get('/dialog/' + that.slug + '/' + dialog_id + that.FORMAT, settings);
+    },
+    comments: function(dialog_id, settings) {
+      if (!dialog_id || !typeof dialog_id == "number") {
+        throw "Invalid id. It should be numeric.";
+      }
+      settings = $.extend({}, default_sorted_settings, settings);
+      that.jsonp_get('/comment/' + that.slug + '/' + dialog_id + that.FORMAT, settings);
+    },
+    topic: function(type, settings) {
+      if (type != "q" && type != "p" && type != "s" && type != "b") {
+        throw "Invalid topic type. Please use one of: q, p, s, b.";
+      }
+      settings = $.extend({}, default_sorted_settings, settings);
+      that.jsonp_get('/' + that.slug + '/' + type + that.FORMAT, settings);
+    },
+    search: function(query, settings) {
+      if (!query) { return; }
+      query = decodeURIComponent(query);
+      settings = $.extend({}, default_plain_settings, settings);
+      that.jsonp_get('/search/' + that.slug + '/' + query + that.FORMAT, settings);
     }
-    settings = $.extend({}, default_plain_settings, settings);
-    this.get('/dialog/' + this.slug + '/' + id + this.FORMAT, settings);
   }
-  this.comments = function(id, settings) {
-    if (!id || !typeof id == "number") {
-      throw "Invalid id. It should be numeric.";
+
+  // Post data to your forum
+  this.POST = {
+    dialog: function(dialog, settings) {
+      if (!dialog.name || !dialog.useremail || !dialog.topic || !dialog.title || !dialog.text) {
+        throw "Need to specify both name, useremail, topic, title, and text.";
+      }
+      that.ajax_post('/' + that.slug, dialog, settings);
+    },
+    comment: function(dialog_id, comment, settings) {
+      if (!dialog_id || !typeof dialog_id == "number") {
+        throw "Invalid id. It should be numeric.";
+      }
+      if (!dialog.name || !dialog.useremail || !dialog.text) {
+        throw "Need to specify both name, useremail, and text.";
+      }
+      that.ajax_post('/comment/' + that.slug + '/' + dialog_id, comment, settings);
+    },
+    vote: function(dialog_id, comment, settings) {
+      if (!dialog_id || !typeof dialog_id == "number") {
+        throw "Invalid id. It should be numeric.";
+      }
+      if (!dialog.name || !dialog.useremail) {
+        throw "Need to specify both name and useremail.";
+      }
+      that.ajax_post('/vote/' + that.slug + '/' + dialog_id, comment, settings);
     }
-    settings = $.extend({}, default_sorted_settings, settings);
-    this.get('/comment/' + this.slug + '/' + id + this.FORMAT, settings);
-  }
-  this.topic = function(type, settings) {
-    if (type != "q" && type != "p" && type != "s" && type != "b") {
-      throw "Invalid topic type. Please use one of: q, p, s, b.";
-    }
-    settings = $.extend({}, default_sorted_settings, settings);
-    this.get('/' + this.slug + '/' + type + this.FORMAT, settings);
-  }
-  this.search = function(query, settings) {
-    if (!query) { return; }
-    query = decodeURIComponent(query);
-    settings = $.extend({}, default_plain_settings, settings);
-    this.get('/search/' + this.slug + '/' + query + this.FORMAT, settings);
   }
 }
