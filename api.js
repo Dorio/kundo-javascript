@@ -34,9 +34,7 @@ function KundoAPI(slug) {
   this.jsonp_get = function(url, settings) {
     var params = this.obj_to_qs(settings);
     url = this.BASE_URL + url + "?" + params;
-    $.ajax({ url: url, dataType: "jsonp", success: function(data){
-      settings.callback(data);
-    }});
+    jQuery.ajax({ url: url, dataType: "jsonp", success: settings.callback });
   }
   this.ajax_post = function(url, data, settings) {
     // Cross domain POST is not possible with IE6 and IE7 so we
