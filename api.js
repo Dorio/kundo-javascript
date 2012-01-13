@@ -3,7 +3,7 @@ function KundoAPI(slug) {
   this.BASE_URL = "http://localhost:8000/api";
   this.FORMAT = ".json";
   if (!slug) {
-    throw "Invalid slug. Please provide a proper slug.";
+    throw new Error("Invalid slug. Please provide a proper slug.");
   }
   this.slug = slug;
 
@@ -53,21 +53,21 @@ function KundoAPI(slug) {
     },
     single: function(dialog_id, settings) {
       if (!dialog_id || !typeof dialog_id == "number") {
-        throw "Invalid id. It should be numeric.";
+        throw new Error("Invalid id. It should be numeric.");
       }
       settings = $.extend({}, default_plain_settings, settings);
       that.jsonp_get('/dialog/' + that.slug + '/' + dialog_id + that.FORMAT, settings);
     },
     comments: function(dialog_id, settings) {
       if (!dialog_id || !typeof dialog_id == "number") {
-        throw "Invalid id. It should be numeric.";
+        throw new Error("Invalid id. It should be numeric.");
       }
       settings = $.extend({}, default_sorted_settings, settings);
       that.jsonp_get('/comment/' + that.slug + '/' + dialog_id + that.FORMAT, settings);
     },
     topic: function(type, settings) {
       if (type != "q" && type != "p" && type != "s" && type != "b") {
-        throw "Invalid topic type. Please use one of: q, p, s, b.";
+        throw new Error("Invalid topic type. Please use one of: q, p, s, b.");
       }
       settings = $.extend({}, default_sorted_settings, settings);
       that.jsonp_get('/' + that.slug + '/' + type + that.FORMAT, settings);
