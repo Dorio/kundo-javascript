@@ -20,7 +20,7 @@ function KundoAPI(slug) {
   }
 
   // Helpers
-  this.obj_to_string = function(obj) {
+  this.obj_to_qs = function(obj){
     var params = [];
     for (attrname in obj) {
       if (attrname == "callback") { continue; }
@@ -29,7 +29,7 @@ function KundoAPI(slug) {
     return params.join("&")
   }
   this.jsonp_get = function(url, settings) {
-    var params = this.obj_to_string(settings);
+    var params = this.obj_to_qs(settings);
     url = this.BASE_URL + url + "?" + params;
     $.ajax({ url: url, dataType: "jsonp", success: function(data){
       settings.callback(data);
