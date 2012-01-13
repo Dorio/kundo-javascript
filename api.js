@@ -46,11 +46,33 @@ function KundoAPI(slug) {
     url = this.BASE_URL + url + "?" + params;
     jQuery.ajax({ url: url, dataType: "jsonp", success: settings.callback });
   }
-  this.ajax_post = function(url, data, settings) {
-    // Cross domain POST is not possible with IE6 and IE7 so we
-    // simulate it with a jsonp_get instead.
-    settings = $.extend({}, data, settings);
-    this.jsonp_get(url, settings);
+  this.post_via_iframe = function(url, form, settings) {
+    url = this.BASE_URL + url;
+    if (!jQuery.receiveMessage) {
+      throw new Error(
+        "Posting data through the API requires \"jQuery postMessage\", " +
+        "which is available here: https://github.com/cowboy/jquery-postmessage"
+      );
+    }
+
+    var iframe_name = "kundo_result_iframe";
+    jQuery.receiveMessage(function(event){
+      var data = that.qs_to_obj(event.data);
+      if (!jQuery.isEmptyObject(data)) {
+        settings.error(data);
+      }
+      else {
+        settings.success();
+      }
+      $("#" + iframe_name).remove();
+    });
+
+    jQuery("body").append(jQuery('<iframe>', {
+      name: iframe_name,
+      id: iframe_name,
+      style: "display: none"
+    }));
+    jQuery(form).attr("target", iframe_name);
   }
 
   // Allow access to "this" inside this.GET and this.POST
@@ -93,29 +115,32 @@ function KundoAPI(slug) {
 
   // Post data to your forum
   this.POST = {
-    dialog: function(dialog, settings) {
-      if (!dialog.name || !dialog.useremail || !dialog.topic || !dialog.title || !dialog.text) {
-        throw "Need to specify both name, useremail, topic, title, and text.";
+    dialog: function(form, settings) {
+      if (!form) {
+        throw new Error("You need to specify a valid form that will post the dialog");
       }
-      that.ajax_post('/' + that.slug, dialog, settings);
+      else if (!settings.success || !settings.error) {
+        throw new Error("You need to specify both a success and error callback");
+      }
+      that.post_via_iframe(that.slug, form, settings);
     },
-    comment: function(dialog_id, comment, settings) {
-      if (!dialog_id || !typeof dialog_id == "number") {
-        throw "Invalid id. It should be numeric.";
+    comment: function(form, settings) {
+      if (!form) {
+        throw new Error("You need to specify a valid form that will post the comment");
       }
-      if (!dialog.name || !dialog.useremail || !dialog.text) {
-        throw "Need to specify both name, useremail, and text.";
+      else if (!settings.success || !settings.error) {
+        throw new Error("You need to specify both a success and error callback");
       }
-      that.ajax_post('/comment/' + that.slug + '/' + dialog_id, comment, settings);
+      that.post_via_iframe('/comment/' + that.slug + '/' + dialog_id, form, settings);
     },
-    vote: function(dialog_id, comment, settings) {
-      if (!dialog_id || !typeof dialog_id == "number") {
-        throw "Invalid id. It should be numeric.";
+    vote: function(form, settings) {
+      if (!form) {
+        throw new Error("You need to specify a valid form that will post the vote");
       }
-      if (!dialog.name || !dialog.useremail) {
-        throw "Need to specify both name and useremail.";
+      else if (!settings.success || !settings.error) {
+        throw new Error("You need to specify both a success and error callback");
       }
-      that.ajax_post('/vote/' + that.slug + '/' + dialog_id, comment, settings);
+      that.post_via_iframe('/vote/' + that.slug + '/' + dialog_id, form, settings);
     }
   }
 }

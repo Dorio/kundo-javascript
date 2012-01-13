@@ -20,7 +20,14 @@
     #post_form {
       display: none;
     }
+    .kundo_error {
+      background: #fcc;
+      padding: 3px;
+      margin-left: 5px;
+    }
   </style>
+  <script src="jquery-1.7.1.min.js"></script>
+  <script src="jquery.ba-postmessage.min.js"></script>
 </head>
 <body>
   <form onsubmit="return false">
@@ -31,7 +38,7 @@
     <button type="submit" onclick="init(this.form.slug.value)">Initialize API and show form</button>
   </form>
   <div id="post_form">
-    <form onsubmit="return false" method="POST">
+    <form method="POST">
       <p>
         <label for="type_q">
           <input type="radio" name="topic" id="type_q" value="Q" checked> Question
@@ -50,53 +57,48 @@
       <p><textarea name="text"></textarea></p>
       <p>Your name: <input name="name"></p>
       <p>Your e-mail: <input name="useremail"></p>
+
+      <input id="error_url" name="error_url" type="hidden" value="">
+      <input id="success_url" name="success_url" type="hidden" value="">
       <p><button type="submit" onclick="post_dialog(this.form)">Send</button></p>
     </form>
   </div>
 
   <script src="jquery-1.7.1.min.js"></script>
+  <script src="jquery.ba-postmessage.min.js"></script>
   <script src="api.js"></script>
   <script>
     window.SLUG = null;
 
     function init(slug) {
       window.SLUG = slug;
-
+      var api_url = "http://localhost:8000/api/" + window.SLUG;
+      $("#post_form form").attr("action", api_url)
+      $("#error_url").attr("value", api_url + "/js-endpoint/")
+      $("#success_url").attr("value", api_url + "/js-endpoint/")
       $("#post_form").show();
       return false;
-    }
-
-    function getRadioValue(inputs) {
-      for (var i = 0; i < inputs.length; i++) {
-        if (inputs[i].checked) {
-          return inputs[i].value;
-        }
-      }
     }
 
     function post_dialog(form){
       if (!window.SLUG) { return; }
 
-      // Create a new API object, that will be used for all subsequent calls
       var API = new KundoAPI(window.SLUG);
-
-      var dialog = {
-        name: form.name.value,
-        useremail: form.useremail.value,
-        topic: getRadioValue(form.topic),
-        title: form.title.value,
-        text: form.text.value,
-      }
-
-      // Post a new dialog through the API, send post data and a callback
-      API.POST.dialog(dialog, {
-        callback: function() {
-          alert("Great success!");
-          form.reset();
+      API.POST.dialog(form, {
+        success: function(){
+          $('.kundo_error').remove();
+          alert("The post was successfully posted");
+        },
+        error: function(data){
+          $('.kundo_error').remove();
+          $.each(data, function(name, error) {
+            console.log(name, $("[name='" + name + "']"))
+            $("[name='" + name + "']").after(
+              $('<span class="kundo_error">' + error + '</span>')
+            );
+          });
         }
       });
-
-      return false;
     }
   </script>
 </body>
