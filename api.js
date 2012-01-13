@@ -28,6 +28,16 @@ function KundoAPI(slug) {
     }
     return params.join("&")
   }
+  this.qs_to_obj = function(qs){
+    if (!qs) return {};
+    var obj = {},
+        parts = decodeURIComponent(qs).split("&");
+    for (var i = 0, len = parts.length, key_value; i < len; i++) {
+      key_value = parts[i].split("=");
+      obj[key_value[0]] = key_value[1].replace(/\+/g, " ");
+    }
+    return obj;
+  }
   this.extend = function(obj1, obj2) {
     return jQuery.extend({}, obj1, obj2);
   }
