@@ -28,6 +28,9 @@ function KundoAPI(slug) {
     }
     return params.join("&")
   }
+  this.extend = function(obj1, obj2) {
+    return jQuery.extend({}, obj1, obj2);
+  }
   this.jsonp_get = function(url, settings) {
     var params = this.obj_to_qs(settings);
     url = this.BASE_URL + url + "?" + params;
@@ -48,34 +51,34 @@ function KundoAPI(slug) {
   // Get data from your forum
   this.GET = {
     all: function(settings) {
-      settings = $.extend({}, default_sorted_settings, settings);
+      settings = that.extend(default_sorted_settings, settings);
       that.jsonp_get('/' + that.slug + that.FORMAT, settings);
     },
     single: function(dialog_id, settings) {
       if (!dialog_id || !typeof dialog_id == "number") {
         throw new Error("Invalid id. It should be numeric.");
       }
-      settings = $.extend({}, default_plain_settings, settings);
+      settings = that.extend(default_plain_settings, settings);
       that.jsonp_get('/dialog/' + that.slug + '/' + dialog_id + that.FORMAT, settings);
     },
     comments: function(dialog_id, settings) {
       if (!dialog_id || !typeof dialog_id == "number") {
         throw new Error("Invalid id. It should be numeric.");
       }
-      settings = $.extend({}, default_sorted_settings, settings);
+      settings = that.extend(default_sorted_settings, settings);
       that.jsonp_get('/comment/' + that.slug + '/' + dialog_id + that.FORMAT, settings);
     },
     topic: function(type, settings) {
       if (type != "q" && type != "p" && type != "s" && type != "b") {
         throw new Error("Invalid topic type. Please use one of: q, p, s, b.");
       }
-      settings = $.extend({}, default_sorted_settings, settings);
+      settings = that.extend(default_sorted_settings, settings);
       that.jsonp_get('/' + that.slug + '/' + type + that.FORMAT, settings);
     },
     search: function(query, settings) {
       if (!query) { return; }
       query = decodeURIComponent(query);
-      settings = $.extend({}, default_plain_settings, settings);
+      settings = that.extend(default_plain_settings, settings);
       that.jsonp_get('/search/' + that.slug + '/' + query + that.FORMAT, settings);
     }
   }
