@@ -72,6 +72,8 @@
 
     function init(slug) {
       window.SLUG = slug;
+      // The following values can be hardcoded into the form above if you
+      // only post to one specific forum.
       var api_url = "http://localhost:8000/api/" + window.SLUG;
       $("#post_form form").attr("action", api_url)
       $("#error_url").attr("value", api_url + "/js-endpoint/")
@@ -83,21 +85,38 @@
     function post_dialog(form){
       if (!window.SLUG) { return; }
 
+      // Create a new API object, that will be used for all subsequent calls
       var API = new KundoAPI(window.SLUG);
+
+      // Success will be called if the dialog was posted correctly.
+      // You are free to provide any callback you like. In this case we
+      // remove all previous errors and show an alert.
+      function success(){
+        $('.kundo_error').remove();
+        alert("Your message was successfully posted");
+      }
+
+      // Error will be called if there's a validation error. It receives a
+      // objects with keys representing the keys that where incorrect, and
+      // values specifying what the error message was. In this case we remove
+      // all previous errors and create an error message connected to each
+      // input field.
+      function error(data){
+        $('.kundo_error').remove();
+        $.each(data, function(name, error) {
+          $("[name='" + name + "']").after(
+            $('<span class="kundo_error">' + error + '</span>')
+          );
+        });
+      }
+
+      // Post to the dialog, sending in the form that you want to post,
+      // and the two callback previous defined. The API will create a hidden
+      // iframe, post the data in that iframe, and receive the response, parse
+      // it and call either the success or error callbacks.
       API.POST.dialog(form, {
-        success: function(){
-          $('.kundo_error').remove();
-          alert("The post was successfully posted");
-        },
-        error: function(data){
-          $('.kundo_error').remove();
-          $.each(data, function(name, error) {
-            console.log(name, $("[name='" + name + "']"))
-            $("[name='" + name + "']").after(
-              $('<span class="kundo_error">' + error + '</span>')
-            );
-          });
-        }
+        success: success,
+        error: error
       });
     }
   </script>

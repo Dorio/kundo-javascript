@@ -6,8 +6,8 @@ Test with live data:
 
 Clone this repository, and open [test_get.html](https://github.com/kundo/kundo-javascript/blob/master/test_get.html) locally.
 
-Examples:
----------
+Examples of GET:s against the API:
+----------------------------------
 
 ``` js
 // Create a new API object, that will be used for all subsequent calls
@@ -51,5 +51,41 @@ API.all({
       callback: function(data){ console.log(data); }
     });
   }
+});
+```
+
+Examples of POST:s against the API:
+-----------------------------------
+
+``` js
+// Success will be called if the dialog was posted correctly.
+// You are free to provide any callback you like. In this case we
+// remove all previous errors and show an alert.
+function success(){
+  $('.kundo_error').remove();
+  alert("Your message was successfully posted");
+}
+
+// Error will be called if there's a validation error. It receives a
+// objects with keys representing the keys that where incorrect, and
+// values specifying what the error message was. In this case we remove
+// all previous errors and create an error message connected to each
+// input field.
+function error(data){
+  $('.kundo_error').remove();
+  $.each(data, function(name, error) {
+    $("[name='" + name + "']").after(
+      $('<span class="kundo_error">' + error + '</span>')
+    );
+  });
+}
+
+// Post to the dialog, sending in the form that you want to post,
+// and the two callback previous defined. The API will create a hidden
+// iframe, post the data in that iframe, and receive the response, parse
+// it and call either the success or error callbacks.
+API.POST.dialog(form, {
+  success: success,
+  error: error
 });
 ```
