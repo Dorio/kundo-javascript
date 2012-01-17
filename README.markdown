@@ -1,17 +1,41 @@
-Simple Javascript library to access Kundo's API
-===============================================
+Access Kundo's API through Javascript
+=====================================
 
-Test with live data:
---------------------
+This Javascript library can be used to access [Kundo's API](http://kundo.se/api-doc). It's meant to be used from both web sites, and web based applications. 
 
-Clone this repository, and open [test_get.html](https://github.com/kundo/kundo-javascript/blob/master/test_get.html) locally.
+Since browsers have strict cross-domain policies, the API uses a few tricks to work around them, while still maintaining an easy to use API for the developer. Fetching data is done through [JSONP](http://en.wikipedia.org/wiki/JSONP) (a technique for loading JSON through a script tag). Posting data can be done through posting via an hidden iframe, that posts data back to the parent page though postMessage.
 
-Examples of GET:s against the API:
-----------------------------------
+Quick example
+-------------
+``` js
+// Create a new API object, that will be used for all subsequent calls
+var API = new KundoAPI("your-slug-here");
+
+// Get all dialogs in your forum (API gives you 50 at a time)
+API.all({
+  callback: function(data){ console.log(data); }
+});
+```
+
+Dependencies
+------------
+
+* __jQuery__ - Used for cross browser jsonp, and minor convenience.
+* __jQuery postMessage__ - A [polyfill](http://remysharp.com/2010/10/08/what-is-a-polyfill/) for cross browser [postMessage](https://developer.mozilla.org/en/DOM/window.postMessage) support. Used for sending data from a child iframe, back to the parent page.
+
+All use of jQuery is constrained to three helper methods, so to support another library, you need to patch those methods. The postMessage plugin is only used to posting data, so if you're just fetching you don't need that plugin. Both of these are included in the repository.
+
+Test with live data
+-------------------
+
+Clone this repository, and open [test_get.html](https://github.com/kundo/kundo-javascript/blob/master/test_get.html) or [test_post.html](https://github.com/kundo/kundo-javascript/blob/master/test_post.html) locally.
+
+Examples of GET:s against the API
+---------------------------------
 
 ``` js
 // Create a new API object, that will be used for all subsequent calls
-var API = new KundoAPI(slug);
+var API = new KundoAPI("your-slug-here");
 
 // Get all dialogs in your forum (API gives you 50 at a time)
 API.all({
@@ -54,8 +78,8 @@ API.all({
 });
 ```
 
-Examples of POST:s against the API:
------------------------------------
+Examples of POST:s against the API
+----------------------------------
 
 ``` js
 // Success will be called if the dialog was posted correctly.
@@ -79,6 +103,9 @@ function error(data){
     );
   });
 }
+
+// Create a new API object, that will be used for all subsequent calls
+var API = new KundoAPI("your-slug-here");
 
 // Post to the dialog, sending in the form that you want to post,
 // and the two callback previous defined. The API will create a hidden
