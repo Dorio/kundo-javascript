@@ -68,13 +68,15 @@
   <script src="jquery.ba-postmessage.min.js"></script>
   <script src="api.js"></script>
   <script>
-    window.SLUG = null;
+    window.API = null;
 
     function init(slug) {
-      window.SLUG = slug;
+      // Create a new API object, that will be used for all subsequent calls
+      window.API = new KundoAPI(slug);
+
       // The following values can be hardcoded into the form above if you
       // only post to one specific forum.
-      var api_url = "http://localhost:8000/api/" + window.SLUG;
+      var api_url = API.BASE_URL + "/" + slug;
       $("#post_form form").attr("action", api_url)
       $("#error_url").attr("value", api_url + "/js-endpoint/")
       $("#success_url").attr("value", api_url + "/js-endpoint/")
@@ -83,10 +85,7 @@
     }
 
     function post_dialog(form){
-      if (!window.SLUG) { return; }
-
-      // Create a new API object, that will be used for all subsequent calls
-      var API = new KundoAPI(window.SLUG);
+      if (!window.API) { return; }
 
       // Success will be called if the dialog was posted correctly.
       // You are free to provide any callback you like. In this case we
