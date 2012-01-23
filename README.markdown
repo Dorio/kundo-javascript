@@ -48,7 +48,7 @@ API.all({
   callback: function(data){ console.log(data); }
 });
 
-// Get the all dialogs of the type "q". Other types are: q, p, s, b.
+// Get the all dialogs of the type "q". Other types are: q (question), p (problem), s (suggestion), b (praise).
 API.topic("q", {
   callback: function(data){ console.log(data); }
 });
