@@ -68,10 +68,10 @@ API.GET.all({
   sort: "pub_date",
   callback: function(data){
     var dialog_id = data[0].id;
-    API.single(dialog_id, {
+    API.GET.single(dialog_id, {
       callback: function(data){ console.log(data); }
     });
-    API.comments(dialog_id, {
+    API.GET.comments(dialog_id, {
       sort: "pub_date",
       callback: function(data){ console.log(data); }
     });
