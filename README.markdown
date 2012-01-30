@@ -12,7 +12,7 @@ Quick example
 var API = new KundoAPI("your-slug-here");
 
 // Get all dialogs in your forum (API gives you 50 at a time)
-API.all({
+API.GET.all({
   callback: function(data){ console.log(data); }
 });
 ```
@@ -38,25 +38,25 @@ Examples of GET:s against the API
 var API = new KundoAPI("your-slug-here");
 
 // Get all dialogs in your forum (API gives you 50 at a time)
-API.all({
+API.GET.all({
   callback: function(data){ console.log(data); }
 });
 
 // Get the next 50 dialogs in your forum
-API.all({
+API.GET.all({
   start: 50,
   callback: function(data){ console.log(data); }
 });
 
 // Get the all dialogs of the type "q". 
 // Other types are: q (question), p (problem), s (suggestion), b (praise).
-API.topic("q", {
+API.GET.topic("q", {
   callback: function(data){ console.log(data); }
 });
 
 // Search your forum for a specific phrase. The matched phrase will be
 // highlighted with <span class="highlighted">phrase</span>
-API.search("fråga", {
+API.GET.search("fråga", {
   callback: function(data){ console.log(data); }
 });
 
@@ -64,7 +64,7 @@ API.search("fråga", {
 // posts in your specific forum. So lets get all dialogs, fetch the ID
 // of the first dialogs we find, and make a request for that dialog.
 // While we're there, get all the comments for that dialog too.
-API.all({
+API.GET.all({
   sort: "pub_date",
   callback: function(data){
     var dialog_id = data[0].id;
