@@ -101,11 +101,16 @@ function KundoAPI(slug) {
       that.jsonp_get('/comment/' + that.slug + '/' + dialog_id + that.FORMAT, settings);
     },
     topic: function(type, settings) {
-      if (type != "q" && type != "p" && type != "s" && type != "b") {
-        throw new Error("Invalid topic type. Please use one of: q, p, s, b.");
+      type = type.toUpperCase();
+      if (type != "Q" && type != "P" && type != "S" && type != "B") {
+        throw new Error("Invalid topic type. Please use one of: Q, P, S, B.");
       }
       settings = that.extend(default_sorted_settings, settings);
       that.jsonp_get('/' + that.slug + '/' + type + that.FORMAT, settings);
+    },
+    properties: function(settings) {
+      settings = that.extend(default_plain_settings, settings);
+      that.jsonp_get('/properties/' + that.slug + that.FORMAT, settings);
     },
     search: function(query, settings) {
       if (!query) { return; }
