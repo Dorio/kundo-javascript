@@ -75,6 +75,7 @@ function KundoAPI(slug) {
       style: "display: none"
     }));
     jQuery(form).attr("target", iframe_name);
+    jQuery(form).attr("action", url);
   }
 
   // Allow access to "this" inside this.GET and this.POST
@@ -148,6 +149,24 @@ function KundoAPI(slug) {
         throw new Error("You need to specify both a success and error callback");
       }
       that.post_via_iframe('/vote/' + that.slug + '/' + dialog_id, form, settings);
+    },
+    report_dialog: function(form, dialog_id, settings) {
+      if (!form) {
+        throw new Error("You need to specify a valid form that will post the report");
+      }
+      else if (!settings.success || !settings.error) {
+        throw new Error("You need to specify both a success and error callback");
+      }
+      that.post_via_iframe('/report-dialog/' + that.slug + '/' + dialog_id, form, settings);
+    },
+    report_comment: function(form, comment_id, settings) {
+      if (!form) {
+        throw new Error("You need to specify a valid form that will post the report");
+      }
+      else if (!settings.success || !settings.error) {
+        throw new Error("You need to specify both a success and error callback");
+      }
+      that.post_via_iframe('/report-comment/' + that.slug + '/' + comment_id, form, settings);
     }
   }
 }
