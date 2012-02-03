@@ -34,9 +34,7 @@ function KundoAPI(slug) {
         parts = decodeURIComponent(qs).split("&");
     for (var i = 0, len = parts.length, key_value; i < len; i++) {
       key_value = parts[i].split("=");
-      if (key_value.length == 2) {
-        obj[key_value[0]] = key_value[1].replace(/\+/g, " ");
-      }
+      obj[key_value[0]] = key_value[1].replace(/\+/g, " ");
     }
     return obj;
   }
