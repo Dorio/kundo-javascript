@@ -49,7 +49,7 @@ function KundoAPI(slug) {
     jQuery.ajax({ url: url, dataType: "jsonp", success: settings.callback });
   }
   this.post_via_iframe = function(url, form, settings) {
-    url = this.BASE_URL + url;
+    url = this.BASE_URL + "/" + url;
     if (!jQuery.receiveMessage) {
       throw new Error(
         "Posting data through the API requires \"jQuery postMessage\", " +
