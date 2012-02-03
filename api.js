@@ -49,7 +49,7 @@ function KundoAPI(slug) {
     jQuery.ajax({ url: url, dataType: "jsonp", success: settings.callback });
   }
   this.post_via_iframe = function(url, form, settings) {
-    url = this.BASE_URL + "/" + url;
+    url = this.BASE_URL + url;
     if (!jQuery.receiveMessage) {
       throw new Error(
         "Posting data through the API requires \"jQuery postMessage\", " +
@@ -130,7 +130,7 @@ function KundoAPI(slug) {
       else if (!settings.success || !settings.error) {
         throw new Error("You need to specify both a success and error callback");
       }
-      that.post_via_iframe(that.slug, form, settings);
+      that.post_via_iframe("/" + that.slug, form, settings);
     },
     comment: function(form, dialog_id, settings) {
       if (!form) {
