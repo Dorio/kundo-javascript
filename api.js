@@ -102,9 +102,8 @@ function KundoAPI(slug) {
       that.jsonp_get('/comment/' + that.slug + '/' + dialog_id + that.FORMAT, settings);
     },
     topic: function(type, settings) {
-      type = type.toUpperCase();
-      if (type != "Q" && type != "P" && type != "S" && type != "B") {
-        throw new Error("Invalid topic type. Please use one of: Q, P, S, B.");
+      if (type != "q" && type != "p" && type != "s" && type != "b") {
+        throw new Error("Invalid topic type. Please use one of: q, p, s, b.");
       }
       settings = that.extend(default_sorted_settings, settings);
       that.jsonp_get('/' + that.slug + '/' + type + that.FORMAT, settings);
