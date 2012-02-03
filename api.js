@@ -131,7 +131,7 @@ function KundoAPI(slug) {
       }
       that.post_via_iframe(that.slug, form, settings);
     },
-    comment: function(form, settings) {
+    comment: function(form, dialog_id, settings) {
       if (!form) {
         throw new Error("You need to specify a valid form that will post the comment");
       }
@@ -140,7 +140,7 @@ function KundoAPI(slug) {
       }
       that.post_via_iframe('/comment/' + that.slug + '/' + dialog_id, form, settings);
     },
-    vote: function(form, settings) {
+    vote: function(form, dialog_id, settings) {
       if (!form) {
         throw new Error("You need to specify a valid form that will post the vote");
       }
