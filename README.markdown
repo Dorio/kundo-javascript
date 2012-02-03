@@ -117,3 +117,32 @@ API.POST.dialog(form, {
   error: error
 });
 ```
+
+... and here's an example form that needs to be sent to the dialog method:
+
+``` html
+<form method="POST">
+  <p>
+    <label for="type_q">
+      <input type="radio" name="topic" id="type_q" value="Q" checked> Question
+    </label>
+    <label for="type_p">
+      <input type="radio" name="topic" id="type_p" value="P"> Problem
+    </label>
+    <label for="type_s">
+      <input type="radio" name="topic" id="type_s" value="S"> Suggestion
+    </label>
+    <label for="type_b">
+      <input type="radio" name="topic" id="type_b" value="B"> Praise
+    </label>
+  </p>
+  <p>Title: <input name="title"></p>
+  <p><textarea name="text"></textarea></p>
+  <p>Your name: <input name="name"></p>
+  <p>Your e-mail: <input name="useremail"></p>
+
+  <input id="error_url" name="error_url" type="hidden" value="">
+  <input id="success_url" name="success_url" type="hidden" value="">
+  <p><button type="submit" onclick="post_dialog(this.form)">Send</button></p>
+</form>
+```
