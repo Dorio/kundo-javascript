@@ -108,10 +108,6 @@ function KundoAPI(slug) {
       settings = that.extend(default_sorted_settings, settings);
       that.jsonp_get('/' + that.slug + '/' + type + that.FORMAT, settings);
     },
-    properties: function(settings) {
-      settings = that.extend(default_plain_settings, settings);
-      that.jsonp_get('/properties/' + that.slug + that.FORMAT, settings);
-    },
     search: function(query, settings) {
       if (!query) { return; }
       query = decodeURIComponent(query);
