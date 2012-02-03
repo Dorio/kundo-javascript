@@ -141,8 +141,8 @@ API.POST.dialog(form, {
   <p>Your name: <input name="name"></p>
   <p>Your e-mail: <input name="useremail"></p>
 
-  <input id="error_url" name="error_url" type="hidden" value="">
-  <input id="success_url" name="success_url" type="hidden" value="">
+  <input id="error_url" name="error_url" type="hidden" value="http://kundo.se/api/[your slug here]/js-endpoint/">
+  <input id="success_url" name="success_url" type="hidden" value="http://kundo.se/api/[your slug here]/js-endpoint/">
   <p><button type="submit" onclick="post_dialog(this.form)">Send</button></p>
 </form>
 ```
