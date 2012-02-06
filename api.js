@@ -129,6 +129,9 @@ function KundoAPI(slug) {
       if (!form) {
         throw new Error("You need to specify a valid form that will post the comment");
       }
+      else if (!dialog_id || !typeof dialog_id == "number") {
+        throw new Error("Invalid dialog id. It should be numeric.");
+      }
       else if (!settings.success || !settings.error) {
         throw new Error("You need to specify both a success and error callback");
       }
@@ -137,6 +140,9 @@ function KundoAPI(slug) {
     vote: function(form, dialog_id, settings) {
       if (!form) {
         throw new Error("You need to specify a valid form that will post the vote");
+      }
+      else if (!dialog_id || !typeof dialog_id == "number") {
+        throw new Error("Invalid dialog id. It should be numeric.");
       }
       else if (!settings.success || !settings.error) {
         throw new Error("You need to specify both a success and error callback");
@@ -147,6 +153,9 @@ function KundoAPI(slug) {
       if (!form) {
         throw new Error("You need to specify a valid form that will post the report");
       }
+      else if (!dialog_id || !typeof dialog_id == "number") {
+        throw new Error("Invalid dialog id. It should be numeric.");
+      }
       else if (!settings.success || !settings.error) {
         throw new Error("You need to specify both a success and error callback");
       }
@@ -155,6 +164,9 @@ function KundoAPI(slug) {
     report_comment: function(form, comment_id, settings) {
       if (!form) {
         throw new Error("You need to specify a valid form that will post the report");
+      }
+      else if (!comment_id || !typeof comment_id == "number") {
+        throw new Error("Invalid comment id. It should be numeric.");
       }
       else if (!settings.success || !settings.error) {
         throw new Error("You need to specify both a success and error callback");
