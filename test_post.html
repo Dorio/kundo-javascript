@@ -75,7 +75,6 @@
       // The following values can be hardcoded into the form above if you
       // only post to one specific forum.
       var api_url = API.BASE_URL + "/" + slug;
-      $("#post_form form").attr("action", api_url)
       $("#error_url").attr("value", api_url + "/js-endpoint/")
       $("#success_url").attr("value", api_url + "/js-endpoint/")
       $("#post_form").show();
