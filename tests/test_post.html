@@ -37,6 +37,21 @@
   </form>
   <div id="post_form">
     <form method="POST">
+      <p>
+        <label for="type_q">
+          <input type="radio" name="topic" id="type_q" value="Q" checked> Question
+        </label>
+        <label for="type_p">
+          <input type="radio" name="topic" id="type_p" value="P"> Problem
+        </label>
+        <label for="type_s">
+          <input type="radio" name="topic" id="type_s" value="S"> Suggestion
+        </label>
+        <label for="type_b">
+          <input type="radio" name="topic" id="type_b" value="B"> Praise
+        </label>
+      </p>
+      <p>Title: <input name="title"></p>
       <p><textarea name="text"></textarea></p>
       <p>Your name: <input name="name"></p>
       <p>Your e-mail: <input name="useremail"></p>
@@ -95,7 +110,7 @@
       // and the two callback previous defined. The API will create a hidden
       // iframe, post the data in that iframe, and receive the response, parse
       // it and call either the success or error callbacks.
-      API.POST.comment(form, 61745, {
+      API.POST.dialog(form, {
         success: success,
         error: error
       });
