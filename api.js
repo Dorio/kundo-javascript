@@ -92,6 +92,10 @@ function KundoAPI(slug) {
       settings = that.extend(default_plain_settings, settings);
       that.jsonp_get('/dialog/' + that.slug + '/' + dialog_id + that.FORMAT, settings);
     },
+    properties: function(settings){
+      settings = that.extend(default_plain_settings, settings);
+      that.jsonp_get('/properties/' + that.slug + that.FORMAT, settings);
+    }
     comments: function(dialog_id, settings) {
       if (!dialog_id || !typeof dialog_id == "number") {
         throw new Error("Invalid id. It should be numeric.");
