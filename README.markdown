@@ -1,7 +1,7 @@
 Access Kundo's API through Javascript
 =====================================
 
-This Javascript library can be used to access [Kundo's API](http://kundo.se/api-doc). It's meant to be used from both web sites, and web based applications. 
+This Javascript library can be used to access [Kundo's API](http://kundo.se/api-doc). It's meant to be used from both web sites, and web based applications.
 
 Since browsers have strict cross-domain policies, the API uses a few tricks to work around them, while still maintaining an easy to use API for the developer. Fetching data is done through [JSONP](http://en.wikipedia.org/wiki/JSONP) (a technique for loading JSON through a script tag). Posting data can be done through posting via an hidden iframe, that posts data back to the parent page though postMessage.
 
@@ -48,10 +48,10 @@ API.GET.all({
   callback: function(data){ console.log(data); }
 });
 
-// Get the all dialogs of the type "q". 
-// Other types are: q (question), p (problem), s (suggestion), b (praise).
-API.GET.topic("q", {
-  callback: function(data){ console.log(data); }
+// Get the all dialogs of the type "Q".
+// Other types are: Q (question), P (problem), S (suggestion), B (praise).
+API.GET.topic("Q", {
+  callback: callback_list("All questions")
 });
 
 // Search your forum for a specific phrase. The matched phrase will be
